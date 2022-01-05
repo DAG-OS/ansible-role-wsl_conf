@@ -1,0 +1,27 @@
+{% macro write_option(section, name) -%}
+{% set var_name = "wsl_conf_" + section + "_" + name %}
+{%- if vars[var_name] | default('') != '' %}{{ name }} = "{{ vars[var_name] }}"{% endif -%}
+{%- endmacro %}
+# {{ ansible_managed }}
+
+[automount]
+{{ write_option("automount", "enabled") }}
+{{ write_option("automount", "mountFsTab") }}
+{{ write_option("automount", "root") }}
+{{ write_option("automount", "options") }}
+
+[network]
+{{ write_option("network", "generateHosts") }}
+{{ write_option("network", "generateResolvConf") }}
+
+[interop]
+{{ write_option("interop", "enabled") }}
+{{ write_option("interop", "appendWindowsPath") }}
+
+[user]
+{{ write_option("user", "default") }}
+
+[boot]
+{{ write_option("boot", "command") }}
+
+# {{ ansible_managed }}

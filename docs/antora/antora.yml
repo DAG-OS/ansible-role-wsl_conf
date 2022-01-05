@@ -1,0 +1,6 @@
+---
+title: "Ansible role: dagos.wsl_conf"
+name: dagos.wsl_conf
+version: trunk
+nav:
+  - modules/ROOT/nav.adoc

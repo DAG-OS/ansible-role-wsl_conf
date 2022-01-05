@@ -1,0 +1,17 @@
+---
+- name: Converge
+  hosts: all
+  pre_tasks:
+    # By becoming this user when running the role, we test that
+    # the executing user is used as a default when configuring
+    # the /etc/wsl.conf file.
+    - name: Create a test user
+      ansible.builtin.user:
+        name: test_user
+        state: present
+  roles:
+    - role: dagos.wsl_conf
+      become: true
+      become_user: test_user
+      vars:
+        wsl_conf_network_generateHosts: "false"

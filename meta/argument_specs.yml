@@ -1,0 +1,42 @@
+---
+argument_specs:
+  main:
+    options:
+      wsl_conf_automount_enabled:
+        type: "str"
+        choices:
+          - "true"
+          - "false"
+      wsl_conf_automount_mountFsTab:
+        type: "str"
+        choices:
+          - "true"
+          - "false"
+      wsl_conf_automount_root:
+        type: "str"
+      wsl_conf_automount_options:
+        type: "str"
+      wsl_conf_network_generateHosts:
+        type: "str"
+        choices:
+          - "true"
+          - "false"
+      wsl_conf_network_generateResolvConf:
+        type: "str"
+        choices:
+          - "true"
+          - "false"
+      wsl_conf_interop_enabled:
+        type: "str"
+        choices:
+          - "true"
+          - "false"
+      wsl_conf_interop_appendWindowsPath:
+        type: "str"
+        choices:
+          - "true"
+          - "false"
+      wsl_conf_user_default:
+        type: "str"
+      wsl_conf_boot_command:
+        type: "str"

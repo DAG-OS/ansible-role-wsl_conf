@@ -1,0 +1,24 @@
+---
+- name: Verify
+  hosts: all
+  gather_facts: false
+  tasks:
+    - name: Check /etc/wsl.conf exists
+      ansible.builtin.file:
+        path: /etc/wsl.conf
+        state: file
+      check_mode: true
+      register: wsl_conf
+      failed_when: not wsl_conf.state == 'file'
+    - name: Check /etc/wsl.conf contents
+      ansible.builtin.lineinfile:
+        path: /etc/wsl.conf
+        regexp: "{{ item }}"
+        state: absent
+      check_mode: true
+      changed_when: false
+      register: line_in_file
+      failed_when: not line_in_file.found
+      loop:
+        - generateHosts = "false"
+        - default = "test_user"

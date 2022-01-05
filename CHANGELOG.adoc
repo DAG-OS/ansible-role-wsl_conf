@@ -1,0 +1,19 @@
+= Changelog
+
+:base: https://github.com/DAG-OS/ansible-role-wsl_conf
+//:v1_0_0: {base}/compare/a62c66d\...v1.0.0[v.1.0.0]
+:unreleased: {base}/compare/a62c66d\...HEAD[Unreleased]
+
+All notable changes to this project will be documented in this file.
+
+The format is based on https://keepachangelog.com/en/1.1.0/[Keep a Changelog],
+and this project adheres to https://semver.org/spec/v2.0.0.html[Semantic Versioning].
+
+== {unreleased}
+
+This section tracks upcoming changes that are not yet released.
+
+=== Added
+
+* Ansible role for wsl_conf.
+* Role testing via https://molecule.readthedocs.io/en/latest/[Molecule].

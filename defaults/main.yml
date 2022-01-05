@@ -1,0 +1,16 @@
+---
+########################################
+# Variables for /etc/wsl.conf
+# Follow link for more information:
+#   https://docs.microsoft.com/en-us/windows/wsl/wsl-config#set-wsl-launch-settings
+wsl_conf_automount_enabled: "true"
+wsl_conf_automount_mountFsTab: "true"
+wsl_conf_automount_root: "/mnt/"
+wsl_conf_automount_options: "metadata,umask=22,fmask=11"
+wsl_conf_network_generateHosts: "true"
+wsl_conf_network_generateResolvConf: "true"
+wsl_conf_interop_enabled: "true"
+wsl_conf_interop_appendWindowsPath: "false"
+wsl_conf_user_default: ""
+wsl_conf_boot_command: ""
+########################################

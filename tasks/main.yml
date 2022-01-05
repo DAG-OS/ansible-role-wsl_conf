@@ -1,0 +1,22 @@
+---
+- block:
+  - name: Check which user is executing the role
+    ansible.builtin.command: whoami
+    changed_when: false
+    register: whoami_result
+  - name: Ensure wsl_conf_user_default has a sensible value
+    ansible.builtin.set_fact:
+      wsl_conf_user_default: "{{ whoami_result.stdout }}"
+  when: wsl_conf_user_default | length == 0
+
+- name: Configure WSL specific configuration files
+  become: true
+  become_user: root
+  ansible.builtin.template:
+    src: "{{ item }}.j2"
+    dest: "/{{ item }}"
+    owner: root
+    group: root
+    mode: u=rw,g=r,o=r
+  loop:
+    - etc/wsl.conf

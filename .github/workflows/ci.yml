@@ -1,0 +1,92 @@
+---
+name: CI
+
+on:
+  push:
+    branches:
+      - trunk
+      - 'v*'
+  schedule:
+    - cron: "0 7 * * 2"
+
+jobs:
+
+  docs:
+    name: Trigger pages generation
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the codebase.
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 2
+      - name: Check if any documentation related files changed.
+        id: changed-documentation-files
+        uses: tj-actions/changed-files@v12.2
+        with:
+          files: |
+            CHANGELOG.adoc
+            ^docs/
+            defaults/main.yml
+            molecule/default/converge.yml
+      - name: Trigger DAG-OS pages workflow
+        if: steps.changed-documentation-files.outputs.any_changed == 'true'
+        run: |
+          curl \
+            -X POST \
+            -u "MLNW:${{ secrets.GIT_HUB_TOKEN }}" \
+            -H "Accept: application/vnd.github.v3+json" \
+            https://api.github.com/repos/DAG-OS/pages/actions/workflows/publish.yml/dispatches \
+            --data '{"ref": "trunk" }'
+
+  molecule:
+    name: Molecule
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        distro:
+          - ubuntu2004
+          - centos8
+    steps:
+      - name: Check out the codebase.
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 2
+
+      - name: Check if any ansible related files changed.
+        id: changed-ansible-files
+        uses: tj-actions/changed-files@v12.2
+        with:
+          files: |
+            ^(defaults|files|handlers|meta|molecule|tasks|templates|vars)/
+
+      - name: Check if test should run
+        id: check
+        # Run either on schedules or when files changed
+        run: |
+          ([[ '${{ github.event_name }}' == 'schedule' ]] \
+          || ${{ steps.changed-ansible-files.outputs.any_changed }}) \
+          && echo "::set-output name=should_run::true" \
+          || echo "::set-output name=should_run::false"
+
+      - name: Set up Python 3.
+        if: steps.check.outputs.should_run == 'true'
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.x'
+
+      - name: Install test dependencies.
+        if: steps.check.outputs.should_run == 'true'
+        run: pip3 install ansible molecule[docker] docker
+
+      - name: Use CI specific Molecule configuration.
+        if: steps.check.outputs.should_run == 'true'
+        run: mv molecule/default/molecule-ci.yml molecule/default/molecule.yml
+
+      - name: Run Molecule tests.
+        if: steps.check.outputs.should_run == 'true'
+        run: molecule test
+        env:
+          PY_COLORS: '1'
+          ANSIBLE_FORCE_COLOR: '1'
+          MOLECULE_DISTRO: ${{ matrix.distro }}
+          MOLECULE_DRIVER: 'docker'
